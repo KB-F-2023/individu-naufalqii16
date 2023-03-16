@@ -60,7 +60,6 @@ class Route:
 
 # Define the Population class
 class Population:
-    # previous code ...
     def __init__(self, size):
         self.routes = []
         for i in range(size):
@@ -104,7 +103,6 @@ class Population:
 
         new_routes.sort(key=lambda x: x.distance)
         self.routes = new_routes
-
 
 if __name__ == '__main__':
     cities = [City(x, y) for x, y in CITY_COORDINATES]
