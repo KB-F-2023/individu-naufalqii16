@@ -29,14 +29,21 @@ class Graph:
         
     def get_node(self, name):
         return self.vertices[name]
-    
+
+
 def astar(graph, start, goal):
     visited = set()
     heap = [(0, start)]
+    parents = {start: None}
     while heap:
         (cost, current) = heapq.heappop(heap)
         if current == goal:
-            return cost
+            path = []
+            while current in parents:
+                path.append(current)
+                current = parents[current]
+            path.reverse()
+            return (cost, path)
         if current in visited:
             continue
         visited.add(current)
@@ -44,8 +51,12 @@ def astar(graph, start, goal):
             if neighbor in visited:
                 continue
             heuristic = graph.get_node(neighbor).heuristic
-            heapq.heappush(heap, (cost + distance + heuristic, neighbor))
-    return float('inf')
+            new_cost = cost + distance + heuristic
+            if neighbor not in parents or new_cost < parents[neighbor]:
+                parents[neighbor] = current
+                heapq.heappush(heap, (new_cost, neighbor))
+    return (float('inf'), [])
+
 
 # generate graph
 g = Graph()
@@ -111,10 +122,13 @@ g.get_node('P').heuristic = 193
 g.get_node('Q').heuristic = 420
 g.get_node('R').heuristic = 0
 
-# perform A*
-cost = astar(g, start, goal)
 
-# print result
-print("Shortest path from", start, "to", goal, "is", cost)
+cost, path = astar(g, start, goal)
+if cost == float('inf'):
+    print("Tidak ada jalur yang tersedia")
+else:
+    print(f"Cost terkecil dari node {start} ke node {goal} adalah {cost}")
+    print("Jalur terpendek adalah:", path)
+
 
 
